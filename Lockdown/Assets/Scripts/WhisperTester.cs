@@ -1,29 +1,55 @@
 using NUnit.Framework;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.InputSystem;
 using Whisper;
+using System.Collections;
 
-public class WhisperTest : MonoBehaviour
+public class RecordAudio : MonoBehaviour
 {
-    [SerializeField] private TerminalManager TM;
-    public WhisperManager whisper;
+    [SerializeField] private CommandManager TM;
+    [SerializeField] private Camera xrCamera;
+    [SerializeField] private WhisperManager whisper;
 
+    private GameObject currentTarget;
     private AudioClip clip;
     private string mic;
     private bool isRecording = false;
 
     void Start()
     {
-        mic = Microphone.devices[0];
+        foreach (var device in Microphone.devices)
+        {
+            if (device.Contains("Oculus"))
+            {
+                mic = device;
+            }
+        }
         Debug.Log("Mic ready: " + mic);
+    }
+
+    private void DoRaycast()
+    {
+        Ray ray = new Ray(xrCamera.transform.position, xrCamera.transform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 10f))
+        {
+            currentTarget = hit.collider.gameObject;
+            Debug.Log("Hit object: " + currentTarget.name + " | Tag: " + currentTarget.tag);
+        }
+        else
+        {
+            currentTarget = null;
+            Debug.Log("No object hit");
+        }
     }
 
     public void OnGrip(InputAction.CallbackContext context)
     {
         if (context.performed && !isRecording)
         {
+            DoRaycast();
             isRecording = true;
             clip = Microphone.Start(mic, false, 5, 16000);
             Debug.Log("Recording...");
@@ -38,7 +64,7 @@ public class WhisperTest : MonoBehaviour
         }
     }
 
-    System.Collections.IEnumerator RunWhisper()
+    private IEnumerator RunWhisper()
     {
         var task = whisper.GetTextAsync(clip);
         yield return new WaitUntil(() => task.IsCompleted);
@@ -62,7 +88,7 @@ public class WhisperTest : MonoBehaviour
         
         if (TM != null)
         {
-            TM.ProcessText(fullText);
+            TM.ProcessText(fullText, currentTarget);
         } else
         {
             Debug.LogError("WhisperTester does not have ref for TerminalManager");
