@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public abstract class SystemParent : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public abstract class SystemParent : MonoBehaviour
 
     [Header("System Identity")]
     [SerializeField] protected string systemName;
+    [SerializeField] protected TMP_Text status;
 
     protected PowerManager powerManager;
 
@@ -32,6 +34,9 @@ public abstract class SystemParent : MonoBehaviour
 
         if (approved)
         {
+            this.status.color = Color.green;
+            this.status.text = "On";
+
             isPowered = true;
             Debug.Log(systemName + " powered ON");
             OnPowerOn();
@@ -48,6 +53,9 @@ public abstract class SystemParent : MonoBehaviour
     public void PowerOff()
     {
         if (!isPowered) return;
+
+        this.status.color = Color.gray;
+        this.status.text = "Off";
 
         isPowered = false;
 

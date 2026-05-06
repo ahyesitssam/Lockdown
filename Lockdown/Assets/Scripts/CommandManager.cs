@@ -3,23 +3,22 @@ using UnityEngine;
 public class CommandManager : MonoBehaviour
 {
     [Header("Systems")]
-    [SerializeField] Ventilation ventilation;
+    [SerializeField] private Ventilation ventilation;
+    [SerializeField] private Security security;
+    [SerializeField] private Reactor reactor;
 
     private void Start()
     {
         ventilation = GameObject.Find("Systems").GetComponent<Ventilation>();
-        
-        if (ventilation == null)
-        {
-            Debug.LogError("Cannot find Ventalation???");
-        }
+        security = GameObject.Find("Systems").GetComponent<Security>();
+        reactor = GameObject.Find("Systems").GetComponent<Reactor>();
     }
 
     public void ProcessText(string text, GameObject target)
     {
         text = text.ToLower();
 
-        if (text.Contains("divert power"))
+        if (text.Contains("power on"))
         {
             // use raycast info to power on that system
             if (!DetermineTargetSystem(target, true))
@@ -27,7 +26,7 @@ public class CommandManager : MonoBehaviour
                 Debug.Log("Nothing to divert power to");
             }
         }
-        else if (text.Contains("power off"))
+        else if (text.Contains("power off") || text.Contains("power of"))
         {
             // use raycast info to power off that system
             if (!DetermineTargetSystem(target, false))
@@ -55,11 +54,21 @@ public class CommandManager : MonoBehaviour
             case "Laser":
                 if (turingPowerOn)
                 {
-                    //Security.TryPowerOn();
+                    security.TryPowerOn();
                 }
                 else
                 {
-                    //Security.PowerOff();
+                    security.PowerOff();
+                }
+                break;
+            case "Reactor":
+                if (turingPowerOn)
+                {
+                    reactor.TryPowerOn();
+                }
+                else
+                {
+                    reactor.PowerOff();
                 }
                 break;
             case "Light":
@@ -76,16 +85,6 @@ public class CommandManager : MonoBehaviour
                 if (turingPowerOn)
                 {
                     //Terminal.TryPowerOn();
-                }
-                break;
-            case "Reactor":
-                if (turingPowerOn)
-                {
-                    //Reactor.TryPowerOn();
-                }
-                else
-                {
-                    //Reactor.PowerOff();
                 }
                 break;
             default:

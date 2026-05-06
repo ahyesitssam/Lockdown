@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Vent
+  - Laser
+  - Reactor
   layers:
   - Default
   - TransparentFX

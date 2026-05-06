@@ -15,6 +15,7 @@ public class Ventilation : SystemParent
 
     protected override void OnPowerOn()
     {
+
         // Turn all vents ON (spin up)
         foreach (var fan in fanVisuals)
         {
@@ -27,6 +28,8 @@ public class Ventilation : SystemParent
 
     protected override void OnPowerOff()
     {
+        // update UI status
+
         // Turn all vents OFF (spin down)
         foreach (var fan in fanVisuals)
         {
@@ -77,7 +80,7 @@ public class Ventilation : SystemParent
     {
         Debug.Log("VENTILATION FAILURE - PLAYER SUFFOCATION");
 
-        // Hook into your PowerManager lockdown system later
-        // powerManager.TriggerLockdown();
+        status.color = Color.red;
+        status.text = "VENTILATION FAILURE -> SUFFOCATION";
     }
 }

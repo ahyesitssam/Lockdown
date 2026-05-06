@@ -8,6 +8,7 @@ using System.Collections;
 public class RecordAudio : MonoBehaviour
 {
     [SerializeField] private CommandManager TM;
+    [SerializeField] private UIManager UI;
     [SerializeField] private Camera xrCamera;
     [SerializeField] private WhisperManager whisper;
 
@@ -88,6 +89,7 @@ public class RecordAudio : MonoBehaviour
         
         if (TM != null)
         {
+            UI.UpdateRecentCommand(fullText);
             TM.ProcessText(fullText, currentTarget);
         } else
         {
