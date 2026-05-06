@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "name": "XRControls",
+    "maps": [
+        {
+            "name": "XR",
+            "id": "3bd5386f-5de2-4f40-9ce3-b2de32d24b22",
+            "actions": [
+                {
+                    "name": "Grip",
+                    "type": "Button",
+                    "id": "f2642514-014a-49ed-a7de-02655da877e2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d241c8c4-5d10-4ab3-988c-b1c8521a203e",
+                    "path": "<XRController>{RightHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Grip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

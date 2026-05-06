@@ -1,12 +1,18 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
+using UnityEngine.InputSystem;
 using Whisper;
 
 public class WhisperTest : MonoBehaviour
 {
+    [SerializeField] private TerminalManager TM;
     public WhisperManager whisper;
 
     private AudioClip clip;
     private string mic;
+    private bool isRecording = false;
 
     void Start()
     {
@@ -14,16 +20,18 @@ public class WhisperTest : MonoBehaviour
         Debug.Log("Mic ready: " + mic);
     }
 
-    void Update()
+    public void OnGrip(InputAction.CallbackContext context)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (context.performed && !isRecording)
         {
+            isRecording = true;
             clip = Microphone.Start(mic, false, 5, 16000);
             Debug.Log("Recording...");
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (context.canceled && isRecording)
         {
+            isRecording = false;
             Microphone.End(mic);
             Debug.Log("Transcribing...");
             StartCoroutine(RunWhisper());
@@ -51,5 +59,14 @@ public class WhisperTest : MonoBehaviour
         }
 
         Debug.Log("RESULT: " + fullText);
+        
+        if (TM != null)
+        {
+            TM.ProcessText(fullText);
+        } else
+        {
+            Debug.LogError("WhisperTester does not have ref for TerminalManager");
+        }
+        
     }
-}
+} // end class
